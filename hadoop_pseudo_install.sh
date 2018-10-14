@@ -6,13 +6,15 @@ read -p "Hadoop requires Java 8. Do you have JAVA 8 installed? [y/n] " JAVASTATU
 install_java() 
 {
 	echo "[+++] Installing Java..."
+	sleep 2
 	sudo add-apt-repository -y ppa:webupd8team/java
-	sudo apt install oracle-java8-installer
+	sudo apt install -y oracle-java8-installer
 }
 
 install_hadoop() 
 {
 	echo "[+++] Installing Hadoop..."
+	sleep 2
 	# using wget to download binaries
 	echo "[-] Downloading binaries"
 	wget -nc http://mirrors.fibergrid.in/apache/hadoop/common/stable/hadoop-2.9.1.tar.gz
@@ -28,10 +30,11 @@ configure_hadoop()
 	echo "[+++] Configuring hadoop..."
 	# java and hadoop home
 	echo "[-] Setting JAVA_HOME and HADOOP_HOME variables"
-	export JAVA_HOME=$(dirname $(dirname $(readlink -e $(which java))))
-	echo \$JAVA_HOME is $JAVA_HOME
-	export HADOOP_HOME=$HOME/hadoop
-	echo \$HADOOP_HOME is $HADOOP_HOME
+	JAVA_HOME=$(dirname $(dirname $(readlink -e $(which java))))
+	echo "    \$JAVA_HOME is $JAVA_HOME"
+	HADOOP_HOME=$HOME/hadoop
+	echo "    \$HADOOP_HOME is $HADOOP_HOME"
+	sleep 2
 
 	# creating hdfs and namenode, datanodes
 	echo "[-] Creating folders for namenode and datanode"
@@ -86,13 +89,16 @@ configure_hadoop()
 	echo "$confo>$propo>$nmo>yarn.nodemanager.aux-services$nmc>$valo>mapreduce_shuffle$valc>$propc>$confc>" > $HADOOP_HOME/etc/hadoop/yarn-site.xml
 	
 	# formatting namenode
+	sleep 2
+	echo "[-] Formatting namenode
 	$HADOOP_HOME/bin/hdfs namenode -format
 }
 
 set_ssh() 
 {
 	# ssh
-	echo "[+++] Setting up password-less access using ssh"
+	echo "[+++] Setting up password-less access using ssh..."
+	sleep 2
 	ssh-keygen -t rsa -P ""
 	cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys	
 }
@@ -112,7 +118,7 @@ success_msg()
 	echo 
 	echo "SUCCESS!"
 	echo "Installation & Configuration of Hadoop is complete."
-        echo "HDFS & YARN services have been started."
+	echo "HDFS & YARN services have been started."
 	echo
 	echo "To go to the HDFS statuspage visit:"
 	echo "    http://$SERVERIP:50070"
